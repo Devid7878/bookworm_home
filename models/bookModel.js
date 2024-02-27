@@ -34,6 +34,10 @@ const bookSchema = new mongoose.Schema({
   authors: [String],
   categories: [String],
   genre: [String],
+  active: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Book = mongoose.model('Book', bookSchema);

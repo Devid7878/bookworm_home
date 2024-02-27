@@ -70,8 +70,15 @@ userSchema.methods.changedPasswordAfterTokenGenerated = async function (
   jwtCreatedAt
 ) {
   if (this.passwordChangedAt) {
-    console.log(this.passwordChangedAt);
+    const passwordChangedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return jwtCreatedAt < passwordChangedTimestamp;
   }
+
+  return false;
 };
 
 const User = mongoose.model('User', userSchema);
