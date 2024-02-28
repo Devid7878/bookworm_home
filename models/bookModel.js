@@ -33,7 +33,7 @@ const bookSchema = new mongoose.Schema({
   thumbnailUrl: String,
   authors: [String],
   categories: [String],
-  genre: [String],
+  genre: String,
   active: {
     type: Boolean,
     default: false,

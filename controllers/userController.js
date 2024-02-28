@@ -47,13 +47,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// For Admin for approve or reject
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
+
+  const filteredUsers = users.filter((user) => user.role !== 'admin');
 
   res.status(200).json({
     status: 'success',
     data: {
-      users,
+      users: filteredUsers,
     },
   });
 });

@@ -17,6 +17,12 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please enter a valid email!'],
   },
+  phone: {
+    type: Number,
+    required: [true, 'A user must have a phone number'],
+    unique: true,
+    validate: [validator.isMobilePhone, 'Please enter a valid phone number!'],
+  },
   photo: String,
   role: {
     type: String,
@@ -45,7 +51,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   active: {
     type: Boolean,
-    default: true,
+    default: false,
     select: false,
   },
 });
@@ -79,6 +85,18 @@ userSchema.methods.changedPasswordAfterTokenGenerated = async function (
   }
 
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 const User = mongoose.model('User', userSchema);
