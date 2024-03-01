@@ -1,3 +1,4 @@
+import server from './../../src/server';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -8,6 +9,8 @@ import 'swiper/css/navigation';
 
 // import required modules
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { useEffect, useState } from 'react';
+import BookItem from './BookItem';
 
 const products = [
   {
@@ -94,27 +97,40 @@ const products = [
 ];
 
 export default function FeaturedBooks() {
+  const [books, setBooks] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const data = await fetch(`${server}/books`);
+      const res = await data.json();
+      console.log(res);
+      setBooks(res.data.books);
+    };
+    fetchBooks();
+  }, []);
+
   return (
-    <div className="mx-4">
-      <h1>Trending</h1>
-      <Swiper
-        watchSlidesProgress={true}
-        slidesPerView={5}
-        spaceBetween={30}
-        className="mySwiper"
-      >
-        {products.map((product) => (
-          <SwiperSlide key={product.id}>
-            <div className="rounded-sm shadow-lg">
-              <img
-                src={product.imageSrc}
-                alt={product.imageAlt}
-                className="cursor-pointer lg:w-[15vw] lg:h-[40vh] p-0"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className="grid grid-cols-5">
+      {books.map((book, index) => {
+        if (index < 5) {
+          return <BookItem book={book} key={book._id} />;
+        }
+      })}
     </div>
   );
+
+  // <div className="mx-4">
+  //     <Swiper
+  //       watchSlidesProgress={true}
+  //       slidesPerView={5}
+  //       spaceBetween={30}
+  //       className="mySwiper"
+  //     >
+  //       {books.map((book) => (
+  //         <SwiperSlide key={book._id}>
+  //           <BookItem book={book} />
+  //         </SwiperSlide>
+  //       ))}
+  //     </Swiper>
+  //   </div>
 }

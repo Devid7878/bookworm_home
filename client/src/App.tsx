@@ -1,25 +1,25 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AppLayout from './pages/AppLayout';
+import Homepage from './pages/Homepage';
 import Login from './pages/Login';
 import PageNotFound from './pages/PageNotFound';
 import './style.css';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetailsPage from './pages/ProductDetailsPage';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
 import ProfilePage from './pages/ProfilePage';
 import OrderDetailsPage from './pages/OrderDetailsPage';
 import TrackOrderPage from './pages/TrackOrderPage';
 import { ToastContainer } from 'react-toastify';
+import BookDetailsPage from './pages/BookDetailsPage';
+import Books from './components/Books';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AppLayout />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Register />} />
         <Route path="/user/forgotPassword" element={<ForgotPassword />} />
@@ -35,8 +35,8 @@ function App() {
 					element={<ShopResetPassword />}
 				/> */}
 
-        <Route path="/products" element={<ProductsPage />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
+        <Route path="/books/:id" element={<BookDetailsPage />} />
+        <Route path="/books" element={<Books />} />
         <Route
           path="/checkout"
           element={

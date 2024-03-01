@@ -18,10 +18,11 @@ const userSchema = new mongoose.Schema({
     validate: [validator.isEmail, 'Please enter a valid email!'],
   },
   phone: {
-    type: Number,
+    type: String,
     required: [true, 'A user must have a phone number'],
     unique: true,
-    validate: [validator.isMobilePhone, 'Please enter a valid phone number!'],
+    // min: [10, 'Please enter a valid phone number!'],
+    // max: [10, 'Please enter a valid phone number!'],
   },
   photo: String,
   role: {
@@ -51,7 +52,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   active: {
     type: Boolean,
-    default: false,
+    default: true,
     select: false,
   },
 });

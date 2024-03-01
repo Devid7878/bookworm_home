@@ -15,22 +15,22 @@ const bookSchema = new mongoose.Schema({
     required: [true, 'A book must have an ISBN'],
   },
   publishedDate: Date,
-  shortDescription: {
+  summary: {
     type: String,
-    required: [true, 'A book must have a short description'],
+    required: [true, 'A book must have a summary'],
     trim: true,
     // minlength: [
     //   5,
     //   'A book short description must be at least 5 characters long',
     // ],
   },
-  longDescription: {
+  description: {
     type: String,
     required: [true, 'A book must have a description'],
     trim: true,
     // minlength: [5, 'A book description must be at least 5 characters long'],
   },
-  thumbnailUrl: String,
+  coverPhoto: String,
   authors: [String],
   categories: [String],
   genre: String,
@@ -38,7 +38,23 @@ const bookSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  price: Number,
+  ratingsQuantity: Number,
+  ratingsAverage: Number,
+  review: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Review',
+  },
 });
+
+// bookSchema.pre(/^find/, async function (next) {
+//   this.populate({
+//     path: 'review',
+//     select: '-__v',
+//   });
+
+//   next();
+// });
 
 const Book = mongoose.model('Book', bookSchema);
 module.exports = Book;
