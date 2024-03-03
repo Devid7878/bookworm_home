@@ -4,34 +4,40 @@ const APIFeatures = require('../utils/apiFeatures');
 const Book = require('./../models/bookModel');
 
 exports.getAllBooks = catchAsync(async (req, res) => {
-  const features = new APIFeatures(Book.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+	const features = new APIFeatures(Book.find(), req.query)
+		.filter()
+		.sort()
+		.limitFields()
+		.paginate();
 
-  const books = await features.query;
-  // const books = await Book.find({
-  //   categories: ['Java'],
-  // });
+	const books = await features.query;
+	// const books = await Book.find({
+	//   categories: ['Java'],
+	// });
 
-  res.status(200).json({
-    status: 'success',
-    results: books.length,
-    data: {
-      books,
-    },
-  });
+	res.status(200).json({
+		status: 'success',
+		results: books.length,
+		data: {
+			books,
+		},
+	});
 });
 
 exports.createBook = catchAsync(async (req, res) => {
-  const newBook = await Book.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      book: newBook,
-    },
-  });
+	const newBook = await Book.create({
+		title: req.body.title,
+		isbn: req.body.isbn,
+		summary: req.body.summary,
+		description: req.body.description,
+		price: req.body.price,
+	});
+	res.status(201).json({
+		status: 'success',
+		data: {
+			book: newBook,
+		},
+	});
 });
 
 exports.getABook = catchAsync(async (req, res, next) => {

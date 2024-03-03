@@ -4,33 +4,34 @@ class APIFeatures {
     this.queryString = queryString;
   }
   filter() {
-    // Taking the copy of the original req.query so we can do some filtering on the copied query
-    const queryObj = { ...this.queryString };
-    // Excluding some fields that cannot be directly implemented needs some special handling that will be done in their seperate functions
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+		// Taking the copy of the original req.query so we can do some filtering on the copied query
+		const queryObj = { ...this.queryString };
+		// Excluding some fields that cannot be directly implemented needs some special handling that will be done in their seperate functions
+		const excludedFields = ['page', 'sort', 'limit', 'fields'];
 
-    //   delete will delete the field that matches the fields from above queryObj that is urlParamsQueryString object in
-    excludedFields.forEach((el) => delete queryObj[el]);
+		//   delete will delete the field that matches the fields from above queryObj that is urlParamsQueryString object in
+		excludedFields.forEach((el) => delete queryObj[el]);
 
-    //   1B) ADVANCE FILTERING
+		//   1B) ADVANCE FILTERING
 
-    let queryStr = JSON.stringify(queryObj);
+		let queryStr = JSON.stringify(queryObj);
+		// In queryString Obj it will be like {duration: {gt: 100}} but to implement filter in mongo it shpuld be {duration: {$gt: 100}}
+		// Making this '$' availble before any queries like $gt, $lt, $gte, $lte by matching with regex and replacing gt -> $gt
 
-    // In queryString Obj it will be like {duration: {gt: 100}} but to implement filter in mongo it shpuld be {duration: {$gt: 100}}
-    // Making this '$' availble before any queries like $gt, $lt, $gte, $lte by matching with regex and replacing gt -> $gt
+		queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+		// queryStr = queryStr.replace(/\[/, (match) => `$in:${match}`);
 
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    // queryStr = queryStr.replace(/\[/, (match) => `$in:${match}`);
+		// Tour.find() will finf all the tours out of DB and then again applying .find(JSON.pasrse(queryString)), queryString: {duration: {$gt:100}
 
-    // Tour.find() will finf all the tours out of DB and then again applying .find(JSON.pasrse(queryString)), queryString: {duration: {$gt:100}
-    this.query = this.query.find(JSON.parse(queryStr));
+		// {genre:['Educational']}
+		this.query = this.query.find(JSON.parse(queryStr));
 
-    // Untill and unless we do not await the query it will be a query and not the resolved query so we can apply as many mongo query methods on it as we want
+		// Untill and unless we do not await the query it will be a query and not the resolved query so we can apply as many mongo query methods on it as we want
 
-    // Need to return the global obj from here {query: _, queryString: _}
+		// Need to return the global obj from here {query: _, queryString: _}
 
-    return this;
-  }
+		return this;
+	}
 
   sort() {
     if (this.queryString.sort) {
@@ -56,7 +57,7 @@ class APIFeatures {
 
   paginate() {
     const page = this.queryString.page * 1;
-    const limit = this.queryString.limit * 1 || 8;
+    const limit = this.queryString.limit * 1 || 20;
     const skip = (page - 1) * limit;
 
     this.query = this.query.skip(skip).limit(limit);
